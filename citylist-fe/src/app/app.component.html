@@ -1,0 +1,79 @@
+<!-- Toolbar -->
+<div class="toolbar" role="banner">
+  <span>Welcome</span>
+  <div class="spacer"></div>
+  <table cellspacing="0">
+    <tr>
+      <td>
+        <mat-form-field class="example-full-width">
+          <mat-label>username</mat-label>
+          <input matInput [(ngModel)]="username">
+        </mat-form-field>
+      </td>
+      <td>
+        <mat-form-field class="example-full-width">
+          <mat-label>password</mat-label>
+          <input matInput type="password" [(ngModel)]="password">
+        </mat-form-field>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div class="content" role="main">
+  <div class="mat-elevation-z8 image-table">
+    <table  mat-table [dataSource]="dataSource">
+
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> Id</th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-form-field [style.width.px]=100 floatLabel="never">
+            <input matInput placeholder="photoLink" [value]="element.name" [(ngModel)]="element.name">
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="photoLink">
+        <th mat-header-cell *matHeaderCellDef> Photo Link</th>
+        <td mat-cell *matCellDef="let element">
+          <mat-form-field [style.width.px]=500 floatLabel="never">
+            <textarea matInput
+                      cdkTextareaAutosize
+                      #autosize="cdkTextareaAutosize"
+                      cdkAutosizeMinRows="1"
+                      cdkAutosizeMaxRows="5"
+                      [value]="element.photoLink" [(ngModel)]="element.photoLink"></textarea>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="photoImage">
+        <th mat-header-cell *matHeaderCellDef> Photo Link</th>
+        <td mat-cell *matCellDef="let element">
+          <img [src]="element.photoLink"/>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="saveButton">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button (click)="saveValue(element)">Save</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator #paginator [length]="totalRows" [pageIndex]="currentPage" [pageSize]="pageSize"
+                   [pageSizeOptions]="pageSizeOptions" (page)="pageChanged($event)" aria-label="Select page">
+    </mat-paginator>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
