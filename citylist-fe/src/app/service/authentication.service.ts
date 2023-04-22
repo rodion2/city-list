@@ -1,36 +1,55 @@
 import {Injectable} from '@angular/core';
-import {delay, Observable, of} from 'rxjs';
+import {HttpHeaders} from '@angular/common/http';
+import {map} from 'rxjs/operators';
+import {Observable} from "rxjs";
 import {ApiService} from "../api/api.service";
-import * as _ from "lodash";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
 
-@Injectable({providedIn: 'root'})
+export class User {
+  constructor(
+    public status: string,
+    public roles: string[]
+  ) { }
+
+}
+
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthenticationService {
 
-  constructor(private apiService: ApiService,
-              private httpClient: HttpClient) {
+  constructor(
+    private api: ApiService,
+  ) {
   }
 
-  get isAuthenticated(): boolean {
-    if (!_.isEmpty(sessionStorage.getItem('credentials'))) {
-      return true;
-    }
-    return false;
+  login(formData: { username: string; password: string }): Observable<User> {
+    const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa(formData.username + ':' + formData.password) });
+    return this.api.get<User>('authentication/validateLogin', { headers }).pipe(
+      map(
+        userData => {
+          sessionStorage.setItem('username', formData.username);
+          let authString = 'Basic ' + btoa(formData.username + ':' + formData.password);
+          sessionStorage.setItem('basicauth', authString);
+          sessionStorage.setItem('roles', JSON.stringify(userData.roles));
+          return userData;
+        }
+      )
+    );
   }
 
-  login(formData: { username: string; password: string }): Observable<boolean> {
-    this.httpClient.get("localhost:8080/api/v1/user-details", ).subscribe((data) => {
-      sessionStorage.setItem('credentials',
-        JSON.stringify(new AuthenticationDetails(formData.password, formData.username)));
-    }, (error) => {
-      console.log(error);
-    });
+  isUserLoggedIn() {
+    let user = sessionStorage.getItem('username')
+    return !(user === null)
+  }
 
-    return of(true).pipe(delay(3000));
+  hasRole(role: string) {
+    let roles: string[] = JSON.parse(sessionStorage.getItem('roles')?.toString() ?? "");
+    return roles.includes(role);
   }
 
   logout() {
-    sessionStorage.removeItem('credentials');
-    window.location.href = '/';
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('basicauth');
+    sessionStorage.removeItem('roles');
   }
 }

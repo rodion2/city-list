@@ -17,6 +17,14 @@ public class SearchParamsValidator {
 
     private SearchParamsValidator() { }
 
+    /**
+     * Validates searching params to prevent endge-cases issues.
+     *
+     * @param allowedSortByFields allowed fields for sorting.
+     * @param sortBy sort key
+     * @param size page size
+     * @param page page number
+     */
     public static void validate(List<String> allowedSortByFields, String sortBy, Integer size, Integer page) {
         String sortByFieldToCheck = sortBy.startsWith("-")
                 ? sortBy.substring(SORT_BY_FIRST_INDEX_WITHOUT_SORT_DIRECTION) : sortBy;

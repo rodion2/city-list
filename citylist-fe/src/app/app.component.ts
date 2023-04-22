@@ -5,6 +5,9 @@ import {PageDto} from "./model/page.dto";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {AuthenticationService} from "./service/authentication.service";
+import {MatDialog} from "@angular/material/dialog";
+import {LoginDialogComponent} from "./components/login-dialog/login-dialog.component";
+import {Roles} from "./enums/roles";
 
 @Component({
   selector: 'app-root',
@@ -22,17 +25,20 @@ export class AppComponent implements OnInit, AfterViewInit {
   pageSize = 5;
   currentPage = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  editable = false;
+  disabled = true;
+  authorized = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  username: string = "";
-  password: string = "";
+  username: string = '';
+  canEdit: boolean = false;
 
   constructor(private apiService: ApiService,
-              private authenticationService: AuthenticationService) {
+              private authenticationService: AuthenticationService,
+              public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
+    this.disabled = this.authenticationService.isUserLoggedIn();
     this.loadData();
   }
 
@@ -74,26 +80,25 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   saveValue(element: CityDto) {
-    console.log(element);
-    this.apiService.put<CityDto>("cities", {
+    this.apiService.patch<CityDto>("cities", {
       id: element.id,
       name: element.name,
       photoLink: element.photoLink
-    }, {headers: {authorization: 'Basic ' + window.btoa(this.username + ":" + this.password)}}).subscribe(data => {
+    }).subscribe(data => {
       element = data;
     });
   }
 
-  login(username: string, password: string) {
-    console.log(this.username, this.password);
-    this.authenticationService.login({username, password}).toPromise().then((data) => {
-      this.editable = true;
-    }, error => {
-      console.log("Authentidication failed.", error);
+  openLoginDialog() {
+    this.dialog.open(LoginDialogComponent).afterClosed().subscribe(result => {
+      this.username = sessionStorage.getItem('username') ?? '';
+      this.authorized = result;
+      this.canEdit = this.authenticationService.hasRole(Roles.ROLE_ALLOW_EDIT);
     });
   }
 
   logout() {
     this.authenticationService.logout();
+    this.authorized = this.authenticationService.isUserLoggedIn();
   }
 }

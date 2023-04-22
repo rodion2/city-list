@@ -1,4 +1,4 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {catchError, Observable, of} from 'rxjs';
 import {environment} from "../../environments/environment";
@@ -23,10 +23,15 @@ export class ApiService {
       .pipe(catchError((err) => of(err)));
   }
 
-  put<T>(url: string, data: any, httpHeaders: any): Observable<T> {
-    console.log(this.apiBasePath + url, data, httpHeaders);
+  put<T>(url: string, data?: any): Observable<T> {
     return this.http
-      .put<T>(this.apiBasePath + url, data, {headers: httpHeaders})
+      .put<T>(this.apiBasePath + url, data)
+      .pipe(catchError((err) => of(err)));
+  }
+
+  patch<T>(url: string, data?: any): Observable<T> {
+    return this.http
+      .patch<T>(this.apiBasePath + url, data)
       .pipe(catchError((err) => of(err)));
   }
 

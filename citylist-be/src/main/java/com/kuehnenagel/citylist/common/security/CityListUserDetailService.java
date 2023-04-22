@@ -16,6 +16,13 @@ public class CityListUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Load user by username and it's credentials.
+     *
+     * @param username the username identifying the user whose data is required.
+     * @return User security context instance.
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByName(username).orElseThrow(

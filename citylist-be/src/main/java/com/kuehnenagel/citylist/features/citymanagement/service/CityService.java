@@ -1,5 +1,10 @@
-package com.kuehnenagel.citylist.features.citymanagement;
+package com.kuehnenagel.citylist.features.citymanagement.service;
 
+import com.kuehnenagel.citylist.features.citymanagement.dto.CityDto;
+import com.kuehnenagel.citylist.features.citymanagement.dto.CitySearchDto;
+import com.kuehnenagel.citylist.features.citymanagement.mapper.CityMapper;
+import com.kuehnenagel.citylist.features.citymanagement.model.City;
+import com.kuehnenagel.citylist.features.citymanagement.repository.CityRepository;
 import java.util.ArrayList;
 import java.util.List;
 

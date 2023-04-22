@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import com.google.common.base.MoreObjects;
 
+/**
+ * Custom exception for application-specific excpetion handling.
+ */
 public class ServiceException extends RuntimeException {
     private final ServiceError error;
     private final transient Object[] messageParameters;

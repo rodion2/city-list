@@ -1,4 +1,4 @@
-package com.kuehnenagel.citylist.features.citymanagement;
+package com.kuehnenagel.citylist.features.citymanagement.dto;
 
 import java.util.List;
 

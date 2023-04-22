@@ -1,5 +1,6 @@
-package com.kuehnenagel.citylist.features.citymanagement;
+package com.kuehnenagel.citylist.features.citymanagement.repository;
 
+import com.kuehnenagel.citylist.features.citymanagement.model.City;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

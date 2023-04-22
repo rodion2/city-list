@@ -1,29 +1,33 @@
 package com.kuehnenagel.citylist.cityManagement.unit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
+import com.kuehnenagel.citylist.common.error.ServiceException;
+import com.kuehnenagel.citylist.features.citymanagement.dto.CityDto;
+import com.kuehnenagel.citylist.features.citymanagement.dto.CitySearchDto;
+import com.kuehnenagel.citylist.features.citymanagement.mapper.CityMapper;
+import com.kuehnenagel.citylist.features.citymanagement.model.City;
+import com.kuehnenagel.citylist.features.citymanagement.repository.CityRepository;
+import com.kuehnenagel.citylist.features.citymanagement.service.CityService;
+import com.kuehnenagel.citylist.features.citymanagement.service.CityValidator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import com.kuehnenagel.citylist.common.error.ServiceException;
-import com.kuehnenagel.citylist.features.citymanagement.City;
-import com.kuehnenagel.citylist.features.citymanagement.CityDto;
-import com.kuehnenagel.citylist.features.citymanagement.CityMapper;
-import com.kuehnenagel.citylist.features.citymanagement.CityRepository;
-import com.kuehnenagel.citylist.features.citymanagement.CitySearchDto;
-import com.kuehnenagel.citylist.features.citymanagement.CityService;
-import com.kuehnenagel.citylist.features.citymanagement.CityValidator;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.*;
-import org.mockito.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 public class CityServiceTest {
@@ -62,11 +66,7 @@ public class CityServiceTest {
         city.setPhotoLink("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Skyscrapers.jpg");
         List<City> cityList = List.of(city);
         CitySearchDto searchDto = CitySearchDto.builder().pageNumber(0).pageSize(1).sortBy("name").build();
-        CityDto cityDto = CityDto.builder()
-                .id(1L)
-                .name("Tokyo")
-                .photoLink("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Skyscrapers.jpg")
-                .build();
+        CityDto cityDto = new CityDto(1L, "Tokyo", "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Skyscrapers.jpg");
         PageImpl<City> page = new PageImpl<>(cityList, PageRequest.of(0, 1), 1);
 
         when(repository.findAll(((Specification<City>) any()), ((PageRequest) any()))).thenReturn(page);
@@ -92,7 +92,7 @@ public class CityServiceTest {
 
         when(repository.findAll(((Specification<City>) any()), ((PageRequest) any())))
                 .thenReturn(page);
-        when(mapper.map(any(City.class))).thenReturn(CityDto.builder().build());
+        when(mapper.map(any(City.class))).thenReturn(new CityDto());
 
         Page<CityDto> cities = cityService.findCities(searchDto);
 
@@ -103,11 +103,7 @@ public class CityServiceTest {
 
     @Test
     void successfullyUpdateCityNameAndPhotoLinkWithBothValuesValid() {
-        CityDto updateDto = CityDto.builder()
-                .id(1L)
-                .name("Kyoto")
-                .photoLink("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/SkyscrapersKyoto.jpg")
-                .build();
+        CityDto updateDto = new CityDto(1L, "Kyoto", "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/SkyscrapersKyoto.jpg");
 
         City city = new City();
         city.setId(1L);
@@ -136,11 +132,7 @@ public class CityServiceTest {
 
     @Test
     void cityIsNotUpdatedWhenCityNotFoundErrorOccurs() {
-        CityDto updateDto = CityDto.builder()
-                .id(1L)
-                .name("Kyoto")
-                .photoLink("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/SkyscrapersKyoto.jpg")
-                .build();
+        CityDto updateDto = new CityDto(1L, "Kyoto", "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/SkyscrapersKyoto.jpg");
 
         when(repository.findById(any())).thenReturn(Optional.empty());
 

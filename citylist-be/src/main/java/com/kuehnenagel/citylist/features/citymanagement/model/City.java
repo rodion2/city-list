@@ -1,4 +1,4 @@
-package com.kuehnenagel.citylist.features.citymanagement;
+package com.kuehnenagel.citylist.features.citymanagement.model;
 
 import com.kuehnenagel.citylist.common.persistence.PersistentEntity;
 import jakarta.persistence.Column;

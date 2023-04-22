@@ -43,6 +43,9 @@ It allows a user to perform several actions:
 
        docker compose stop
 
+- To access API documentation paste in browser's address input following link
+  
+       http://localhost:8080/swagger-ui/index.html
 
 # Test application
 
