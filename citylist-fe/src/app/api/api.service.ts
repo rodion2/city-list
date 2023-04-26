@@ -14,7 +14,8 @@ export class ApiService {
   }
 
   get<T>(url: string, queryParams?: any, httpHeaders?: any): Observable<T> {
-    return this.http.get<T>(this.apiBasePath + url, {params: queryParams, headers: httpHeaders});
+    return this.http.get<T>(this.apiBasePath + url, {params: queryParams, headers: httpHeaders})
+      .pipe(catchError((err) => of(err)));
   }
 
   post<T>(url: string, data: any, httpHeaders: any): Observable<T> {

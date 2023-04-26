@@ -24,7 +24,7 @@ export class AuthenticationService {
 
   login(formData: { username: string; password: string }): Observable<User> {
     const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa(formData.username + ':' + formData.password) });
-    return this.api.get<User>('authentication/validateLogin', { headers }).pipe(
+    return this.api.get<User>('authentication/validateLogin', {},{ headers }).pipe(
       map(
         userData => {
           sessionStorage.setItem('username', formData.username);

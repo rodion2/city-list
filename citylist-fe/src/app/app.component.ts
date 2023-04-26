@@ -35,6 +35,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   constructor(private apiService: ApiService,
               private authenticationService: AuthenticationService,
               public dialog: MatDialog) {
+    window.addEventListener("beforeunload", function(e) {
+      authenticationService.logout();
+    });
   }
 
   ngOnInit(): void {
@@ -46,9 +49,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  loadData() {
+  loadData(name?: string) {
     this.isLoading = true;
-    const pageSearch = {
+    const pageSearch = name ? {
+      'name': name,
+      'page': this.currentPage,
+      'size': this.pageSize
+    } : {
       'page': this.currentPage,
       'size': this.pageSize
     }
@@ -100,5 +107,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   logout() {
     this.authenticationService.logout();
     this.authorized = this.authenticationService.isUserLoggedIn();
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.loadData(filterValue.trim());
+    // this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

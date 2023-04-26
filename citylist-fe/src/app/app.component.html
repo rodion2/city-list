@@ -9,6 +9,10 @@
 </div>
 
 <div class="content" role="main">
+  <mat-form-field fxFill>
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+  </mat-form-field>
   <div class="mat-elevation-z8 image-table">
     <table mat-table [dataSource]="dataSource">
 
