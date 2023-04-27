@@ -4,7 +4,13 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+# Running as standalone:
+  Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+# Running as docker environment:
+1. Run `docker build -t citylist .` to compile the image;
+2. Run `docker run -p 4400:4200 --name citylist citylist` to run preview server;
+3. Access `localhost` in your browser.
 
 ## Code scaffolding
 
